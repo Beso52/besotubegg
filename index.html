@@ -26,6 +26,8 @@
       left: 0;
       width: 100vw;
       height: 100vh;
+      min-width: 100%;
+      min-height: 100%;
       object-fit: cover;
       z-index: -1;
       pointer-events: none;
@@ -43,17 +45,27 @@
       position: relative;
       z-index: 1;
     }
-    .logo {
-      width: 200px;
-      margin-bottom: 20px;
-      transition: transform 0.3s;
-    }
-    .logo:hover {
-      transform: scale(1.05);
-    }
     h1 {
       font-size: 3em;
       margin-bottom: 0.3em;
+      animation: pulse 2s infinite ease-in-out;
+      opacity: 0;
+      animation: zoomIn 1s ease-in-out forwards;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    @keyframes zoomIn {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
     p {
       font-size: 1.2em;
@@ -66,74 +78,179 @@
       gap: 15px;
       width: 90%;
       max-width: 400px;
+      opacity: 0;
+      animation: zoomIn 1s ease-in-out 0.3s forwards;
     }
     .link-button {
-      background-color: rgba(34, 34, 34, 0.8);
-      border: 1px solid #444;
+      background-color: rgba(0, 0, 0, 0.8);
       color: white;
-      padding: 15px;
-      border-radius: 10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       text-decoration: none;
-      font-size: 1em;
-      transition: background-color 0.3s, transform 0.2s;
+      font-size: 1.2em;
+      transition: transform 0.3s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .link-button:hover {
+      transform: scale(1.1);
+    }
+    .sound-control {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 2;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .link-button:hover {
-      background-color: rgba(68, 68, 68, 0.8);
-      transform: scale(1.03);
-    }
     .sound-btn {
-      background-color: rgba(34, 34, 34, 0.8);
-      border: 1px solid #444;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.8);
+      border: none;
+      padding: 5px;
+      border-radius: 50%;
       cursor: pointer;
-      margin-bottom: 20px;
       transition: background-color 0.3s;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .sound-btn:hover {
       background-color: rgba(68, 68, 68, 0.8);
     }
+    .sound-btn.muted img {
+      filter: grayscale(0%);
+    }
+    .sound-btn.unmuted img {
+      filter: grayscale(100%);
+    }
+    .volume-slider {
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+      width: 0;
+    }
+    .sound-control:hover .volume-slider {
+      opacity: 1;
+      transform: translateX(0);
+      width: 100px;
+    }
+    .volume-slider input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 5px;
+      outline: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .volume-slider input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+    }
+    .volume-slider input[type="range"]::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+    }
     @media (max-width: 600px) {
-      .logo {
-        width: 150px;
-      }
       h1 {
         font-size: 2.2em;
       }
       p {
         font-size: 1em;
       }
+      .sound-control {
+        top: 10px;
+        right: 10px;
+      }
+      .link-button {
+        width: 35px;
+        height: 35px;
+        font-size: 1em;
+      }
     }
   </style>
   <script>
+    let isMuted = true;
     function toggleSound() {
       const iframe = document.querySelector('iframe');
+      const slider = document.querySelector('#volume');
       if (iframe) {
-        iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*');
+        if (isMuted) {
+          iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*');
+          slider.value = 100;
+          document.querySelector('.sound-btn').classList.remove('muted');
+          document.querySelector('.sound-btn').classList.add('unmuted');
+        } else {
+          iframe.contentWindow.postMessage('{"method":"setVolume","value":0.0}', '*');
+          slider.value = 0;
+          document.querySelector('.sound-btn').classList.remove('unmuted');
+          document.querySelector('.sound-btn').classList.add('muted');
+        }
+        isMuted = !isMuted;
       }
     }
+    function adjustVolume() {
+      const iframe = document.querySelector('iframe');
+      const slider = document.querySelector('#volume');
+      const volume = slider.value / 100;
+      if (iframe) {
+        iframe.contentWindow.postMessage(`{"method":"setVolume","value":${volume}}`, '*');
+        const soundBtn = document.querySelector('.sound-btn');
+        if (volume == 0) {
+          isMuted = true;
+          soundBtn.classList.remove('unmuted');
+          soundBtn.classList.add('muted');
+        } else {
+          isMuted = false;
+          soundBtn.classList.remove('muted');
+          soundBtn.classList.add('unmuted');
+        }
+      }
+    }
+    window.addEventListener('load', () => {
+      const iframe = document.querySelector('iframe');
+      if (iframe) {
+        iframe.contentWindow.postMessage('{"method":"setVolume","value":0.0}', '*');
+        document.querySelector('.sound-btn').classList.add('muted');
+      }
+    });
   </script>
 </head>
 <body>
   <iframe src="https://player.vimeo.com/video/1085434418?h=0f73b927fb&autoplay=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
   <div class="overlay"></div>
+  <div class="sound-control">
+    <button class="sound-btn" onclick="toggleSound()">
+      <img src="https://via.placeholder.com/40x40.png?text=Sound" alt="sound icon" style="width: 100%; height: 100%;">
+    </button>
+    <div class="volume-slider">
+      <input type="range" id="volume" min="0" max="100" value="0" oninput="adjustVolume()">
+    </div>
+  </div>
   <div class="content">
-    <a href="https://drive.google.com/uc?export=download&id=1qAtrS-ECxkohbnBvXa_e-xZewoQFZRm4" download>
-      <img src="https://drive.google.com/uc?export=download&id=12YW4bAh5QbXQODEQZoW0jfziL-PGIJKI" alt="besotubegg logo" class="logo">
-    </a>
     <h1>besotubegg</h1>
     <p>Pro Gamer 🎮 | Follow me everywhere 👇</p>
-    <button class="sound-btn" onclick="toggleSound()">Enable Sound</button>
     <div class="links">
-      <a class="link-button" href="https://www.youtube.com/channel/UC4nHBAP2DDj0Nzjzqi1OIFw" target="_blank"><i class="fab fa-youtube"></i> YouTube Channel</a>
-      <a class="link-button" href="https://kick.com/besotubegg" target="_blank"><i class="fas fa-gamepad"></i> Kick Profile</a>
-      <a class="link-button" href="https://www.instagram.com/0beso052/?hl=ar" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
-      <a class="link-button" href="https://discord.gg/zkdW5mAm3r" target="_blank"><i class="fab fa-discord"></i> Discord Server</a>
-      <a class="link-button" href="https://www.twitch.tv/besotubegg" target="_blank"><i class="fab fa-twitch"></i> Twitch</a>
+      <a class="link-button" href="https://www.youtube.com/channel/UC4nHBAP2DDj0Nzjzqi1OIFw" target="_blank"><i class="fab fa-youtube"></i></a>
+      <a class="link-button" href="https://kick.com/besotubegg" target="_blank"><i class="fas fa-gamepad"></i></a>
+      <a class="link-button" href="https://www.instagram.com/0beso052/?hl=ar" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a class="link-button" href="https://discord.gg/zkdW5mAm3r" target="_blank"><i class="fab fa-discord"></i></a>
+      <a class="link-button" href="https://www.twitch.tv/besotubegg" target="_blank"><i class="fab fa-twitch"></i></a>
     </div>
   </div>
 </body>
