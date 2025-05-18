@@ -20,15 +20,15 @@
       position: relative;
       overflow: hidden;
     }
-    video {
+    iframe {
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       object-fit: cover;
       z-index: -1;
-      filter: brightness(0.5);
+      pointer-events: none;
     }
     .overlay {
       position: absolute;
@@ -84,6 +84,19 @@
       background-color: rgba(68, 68, 68, 0.8);
       transform: scale(1.03);
     }
+    .sound-btn {
+      background-color: rgba(34, 34, 34, 0.8);
+      border: 1px solid #444;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: background-color 0.3s;
+    }
+    .sound-btn:hover {
+      background-color: rgba(68, 68, 68, 0.8);
+    }
     @media (max-width: 600px) {
       .logo {
         width: 150px;
@@ -96,12 +109,17 @@
       }
     }
   </style>
+  <script>
+    function toggleSound() {
+      const iframe = document.querySelector('iframe');
+      if (iframe) {
+        iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*');
+      }
+    }
+  </script>
 </head>
 <body>
-  <video autoplay loop playsinline>
-    <source src="https://drive.google.com/uc?export=download&id=1qAtrS-ECxkohbnBvXa_e-xZewoQFZRm4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <iframe src="https://player.vimeo.com/video/1085434418?h=0f73b927fb&autoplay=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
   <div class="overlay"></div>
   <div class="content">
     <a href="https://drive.google.com/uc?export=download&id=1qAtrS-ECxkohbnBvXa_e-xZewoQFZRm4" download>
@@ -109,6 +127,7 @@
     </a>
     <h1>besotubegg</h1>
     <p>Pro Gamer 🎮 | Follow me everywhere 👇</p>
+    <button class="sound-btn" onclick="toggleSound()">Enable Sound</button>
     <div class="links">
       <a class="link-button" href="https://www.youtube.com/channel/UC4nHBAP2DDj0Nzjzqi1OIFw" target="_blank"><i class="fab fa-youtube"></i> YouTube Channel</a>
       <a class="link-button" href="https://kick.com/besotubegg" target="_blank"><i class="fas fa-gamepad"></i> Kick Profile</a>
