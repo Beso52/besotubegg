@@ -54,40 +54,86 @@
     }
 
     .content {
-      position: relative;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       z-index: 1;
       text-align: center;
-      padding-top: 20vh;
-      backdrop-filter: blur(10px);
-      background: rgba(0, 0, 0, 0.5);
-      width: 90%;
+      padding: 20px;
+      width: 80%;
       max-width: 600px;
-      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      animation: float 3s ease-in-out infinite;
+      overflow: hidden; /* لمنع خروج الثلج خارج المستطيل */
+      position: relative; /* لتأثير الثلج */
+    }
+
+    /* تأثير مطر التلج */
+    .content::before,
+    .content::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      animation: fall linear infinite;
+    }
+
+    .content::before {
+      top: -5px;
+      left: 10%;
+      animation-duration: 5s;
+      animation-delay: 0s;
+    }
+
+    .content::after {
+      top: -5px;
+      left: 70%;
+      animation-duration: 7s;
+      animation-delay: 2s;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100%) translateX(0);
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(100vh) translateX(-10px);
+        opacity: 0;
+      }
+    }
+
+    /* إضافة ثلج أكثر باستخدام عدة عناصر */
+    .content::after:nth-child(2n) {
+      left: 30%;
+      animation-duration: 6s;
+      animation-delay: 1s;
+    }
+
+    .content::after:nth-child(3n) {
+      left: 50%;
+      animation-duration: 4s;
+      animation-delay: 3s;
     }
 
     h1 {
       font-size: 2.5em;
       margin-bottom: 0.5em;
-      animation: pulse 2s infinite ease-in-out;
-      opacity: 0;
-      animation: zoomIn 1s ease-in-out forwards;
+      animation: fadeIn 1s ease-in-out forwards;
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes zoomIn {
-      0% {
-        transform: scale(0.5);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
     }
 
     p {
@@ -101,7 +147,7 @@
       color: #fff;
       margin-bottom: 1.5em;
       opacity: 0;
-      animation: zoomIn 1s ease-in-out 0.5s forwards;
+      animation: fadeIn 1s ease-in-out 0.5s forwards;
     }
 
     .links {
@@ -110,7 +156,7 @@
       gap: 15px;
       justify-content: center;
       opacity: 0;
-      animation: zoomIn 1s ease-in-out 0.3s forwards;
+      animation: fadeIn 1s ease-in-out 0.7s forwards;
     }
 
     .link-button {
@@ -234,6 +280,7 @@
       }
       .content {
         padding: 10px;
+        width: 85%;
       }
     }
 
