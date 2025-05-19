@@ -34,10 +34,10 @@
       position: absolute;
       top: 50%;
       left: 50%;
+      width: 100vw;
+      height: 100vh;
       min-width: 100%;
       min-height: 100%;
-      width: auto;
-      height: auto;
       transform: translate(-50%, -50%);
       pointer-events: none;
       filter: brightness(0.6);
@@ -68,8 +68,8 @@
       border-radius: 15px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       animation: float 3s ease-in-out infinite;
-      overflow: hidden; /* لمنع خروج الثلج خارج المستطيل */
-      position: relative; /* لتأثير الثلج */
+      overflow: hidden;
+      position: relative;
     }
 
     /* تأثير مطر التلج */
@@ -112,7 +112,6 @@
       }
     }
 
-    /* إضافة ثلج أكثر باستخدام عدة عناصر */
     .content::after:nth-child(2n) {
       left: 30%;
       animation-duration: 6s;
@@ -282,6 +281,10 @@
         padding: 10px;
         width: 85%;
       }
+      .video-bg iframe {
+        width: 100vw;
+        height: 100vh;
+      }
     }
 
     @media (max-width: 400px) {
@@ -290,6 +293,17 @@
       }
       .visitor-count {
         font-size: 0.9em;
+      }
+      .video-bg iframe {
+        width: 100vw;
+        height: 100vh;
+      }
+    }
+
+    @media (orientation: landscape) {
+      .video-bg iframe {
+        width: 100vw;
+        height: 100vh;
       }
     }
   </style>
