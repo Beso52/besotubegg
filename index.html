@@ -311,7 +311,7 @@
     }
   </style>
   <script>
-    let isMuted = true;
+    let isMuted = false; // الصوت مفتوح تلقائيًا
     let visitorCount = 214;
 
     function adjustVideoSize() {
@@ -378,8 +378,9 @@
     window.addEventListener('load', () => {
       const iframe = document.querySelector('iframe');
       if (iframe) {
-        iframe.contentWindow.postMessage('{"method":"setVolume","value":0.0}', '*');
-        document.querySelector('.sound-btn').classList.add('muted');
+        iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*'); // الصوت مفتوح تلقائيًا
+        document.querySelector('#volume').value = 100; // الـ slider في أعلى قيمة
+        document.querySelector('.sound-btn').classList.add('unmuted'); // الزر في حالة مفتوح
       }
       adjustVideoSize();
       updateVisitorCount();
@@ -400,11 +401,11 @@
 
   <div class="overlay"></div>
   <div class="sound-control">
-    <button class="sound-btn" onclick="toggleSound()">
+    <button class="sound-btn unmuted" onclick="toggleSound()">
       <i class="fas fa-headphones"></i>
     </button>
     <div class="volume-slider">
-      <input type="range" id="volume" min="0" max="100" value="0" oninput="adjustVolume()">
+      <input type="range" id="volume" min="0" max="100" value="100" oninput="adjustVolume()">
     </div>
   </div>
   <div class="content">
