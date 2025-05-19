@@ -381,6 +381,8 @@
         iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*');
         document.querySelector('#volume').value = 100;
         document.querySelector('.sound-btn').classList.add('unmuted');
+      } else {
+        console.error("Iframe not found!");
       }
       adjustVideoSize();
       updateVisitorCount();
@@ -392,10 +394,11 @@
 <body>
   <div class="video-bg">
     <iframe 
-      src="https://player.vimeo.com/video/76979871?background=1&autoplay=1&loop=1&muted=0&autopause=0&controls=0"
+      src="https://player.vimeo.com/video/22439234?background=1&autoplay=1&loop=1&muted=0&autopause=0&controls=0"
       frameborder="0" 
       allow="autoplay; fullscreen"
-      allowfullscreen>
+      allowfullscreen
+      onerror="console.error('Iframe error: Video failed to load');">
     </iframe>
   </div>
 
