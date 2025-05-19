@@ -20,7 +20,7 @@
       position: relative;
       overflow: hidden;
     }
-    iframe {
+    video {
       position: absolute;
       top: 0;
       left: 0;
@@ -30,7 +30,7 @@
       min-height: 100%;
       object-fit: cover;
       z-index: -1;
-      pointer-events: none;
+      filter: brightness(0.6);
     }
     .overlay {
       position: absolute;
@@ -44,10 +44,16 @@
     .content {
       position: relative;
       z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 90%;
+      max-width: 600px;
+      padding: 20px;
     }
     h1 {
-      font-size: 3em;
-      margin-bottom: 0.3em;
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
       animation: pulse 2s infinite ease-in-out;
       opacity: 0;
       animation: zoomIn 1s ease-in-out forwards;
@@ -68,16 +74,22 @@
       }
     }
     p {
-      font-size: 1.2em;
+      font-size: 1.1em;
       color: #aaa;
-      margin-bottom: 2em;
+      margin-bottom: 1em;
+    }
+    .visitor-count {
+      font-size: 1em;
+      color: #fff;
+      margin-bottom: 1.5em;
+      opacity: 0;
+      animation: zoomIn 1s ease-in-out 0.5s forwards;
     }
     .links {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 15px;
-      width: 90%;
-      max-width: 400px;
+      justify-content: center;
       opacity: 0;
       animation: zoomIn 1s ease-in-out 0.3s forwards;
     }
@@ -109,8 +121,7 @@
     .sound-btn {
       background-color: rgba(0, 0, 0, 0.8);
       border: none;
-      color: white;
-      padding: 10px;
+      padding: 5px;
       border-radius: 50%;
       cursor: pointer;
       transition: background-color 0.3s;
@@ -119,16 +130,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2em;
+      font-size: 1.5em;
+      color: white;
     }
     .sound-btn:hover {
       background-color: rgba(68, 68, 68, 0.8);
     }
-    .sound-btn.muted::after {
-      content: '🔇';
+    .sound-btn.muted {
+      color: #888;
     }
-    .sound-btn.unmuted::after {
-      content: '🔊';
+    .sound-btn.unmuted {
+      color: #fff;
     }
     .volume-slider {
       opacity: 0;
@@ -170,35 +182,52 @@
     }
     @media (max-width: 600px) {
       h1 {
-        font-size: 2.2em;
+        font-size: 2em;
       }
       p {
         font-size: 1em;
       }
-      .sound-control {
-        top: 10px;
-        right: 10px;
+      .links {
+        flex-direction: column;
+        align-items: center;
       }
       .link-button {
         width: 35px;
         height: 35px;
         font-size: 1em;
       }
+      .sound-control {
+        top: 10px;
+        right: 10px;
+      }
+      .content {
+        padding: 10px;
+      }
+    }
+    @media (max-width: 400px) {
+      .links {
+        gap: 10px;
+      }
+      .visitor-count {
+        font-size: 0.9em;
+      }
     }
   </style>
   <script>
     let isMuted = true;
+    let visitorCount = 213;
+
     function toggleSound() {
-      const iframe = document.querySelector('iframe');
+      const video = document.querySelector('video');
       const slider = document.querySelector('#volume');
-      if (iframe) {
+      if (video) {
         if (isMuted) {
-          iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*');
+          video.volume = 1.0;
           slider.value = 100;
           document.querySelector('.sound-btn').classList.remove('muted');
           document.querySelector('.sound-btn').classList.add('unmuted');
         } else {
-          iframe.contentWindow.postMessage('{"method":"setVolume","value":0.0}', '*');
+          video.volume = 0.0;
           slider.value = 0;
           document.querySelector('.sound-btn').classList.remove('unmuted');
           document.querySelector('.sound-btn').classList.add('muted');
@@ -206,12 +235,13 @@
         isMuted = !isMuted;
       }
     }
+
     function adjustVolume() {
-      const iframe = document.querySelector('iframe');
+      const video = document.querySelector('video');
       const slider = document.querySelector('#volume');
       const volume = slider.value / 100;
-      if (iframe) {
-        iframe.contentWindow.postMessage(`{"method":"setVolume","value":${volume}}`, '*');
+      if (video) {
+        video.volume = volume;
         const soundBtn = document.querySelector('.sound-btn');
         if (volume == 0) {
           isMuted = true;
@@ -224,20 +254,33 @@
         }
       }
     }
+
+    function updateVisitorCount() {
+      visitorCount++;
+      document.getElementById('visitor-count').textContent = `Visitors: ${visitorCount}`;
+    }
+
     window.addEventListener('load', () => {
-      const iframe = document.querySelector('iframe');
-      if (iframe) {
-        iframe.contentWindow.postMessage('{"method":"setVolume","value":0.0}', '*');
+      const video = document.querySelector('video');
+      if (video) {
+        video.volume = 0.0;
+        video.playbackRate = 1.0;
         document.querySelector('.sound-btn').classList.add('muted');
       }
+      updateVisitorCount();
     });
   </script>
 </head>
 <body>
-  <iframe src="https://player.vimeo.com/video/1085434418?h=0f73b927fb&autoplay=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  <video autoplay loop playsinline>
+    <source src="https://mixkit.co/free-stock-video/gaming-montage-with-neon-lights-12494/" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
   <div class="overlay"></div>
   <div class="sound-control">
-    <button class="sound-btn" onclick="toggleSound()"></button>
+    <button class="sound-btn" onclick="toggleSound()">
+      <i class="fas fa-headphones"></i>
+    </button>
     <div class="volume-slider">
       <input type="range" id="volume" min="0" max="100" value="0" oninput="adjustVolume()">
     </div>
@@ -245,6 +288,7 @@
   <div class="content">
     <h1>besotubegg</h1>
     <p>Pro Gamer 🎮 | Follow me everywhere 👇</p>
+    <div class="visitor-count" id="visitor-count">Visitors: 213</div>
     <div class="links">
       <a class="link-button" href="https://www.youtube.com/channel/UC4nHBAP2DDj0Nzjzqi1OIFw" target="_blank"><i class="fab fa-youtube"></i></a>
       <a class="link-button" href="https://kick.com/besotubegg" target="_blank"><i class="fas fa-gamepad"></i></a>
