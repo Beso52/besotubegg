@@ -2,301 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>besotubegg</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
-    html, body {
+    * {
       margin: 0;
       padding: 0;
+    }
+
+    html, body {
       height: 100%;
       overflow: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      position: relative;
     }
-    iframe {
+
+    .video-bg {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      border: none;
       z-index: -1;
-      pointer-events: none;
-      filter: brightness(0.6);
+      overflow: hidden;
     }
-    .overlay {
+
+    .video-bg iframe {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 0;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
     }
+
     .content {
       position: relative;
       z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 90%;
-      max-width: 600px;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 0.5em;
-      animation: pulse 2s infinite ease-in-out;
-      opacity: 0;
-      animation: zoomIn 1s ease-in-out forwards;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    @keyframes zoomIn {
-      0% {
-        transform: scale(0.5);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-    p {
-      font-size: 1.1em;
-      color: #aaa;
-      margin-bottom: 1em;
-    }
-    .visitor-count {
-      font-size: 1em;
-      color: #fff;
-      margin-bottom: 1.5em;
-      opacity: 0;
-      animation: zoomIn 1s ease-in-out 0.5s forwards;
-    }
-    .links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-      opacity: 0;
-      animation: zoomIn 1s ease-in-out 0.3s forwards;
-    }
-    .link-button {
-      background-color: rgba(0, 0, 0, 0.8);
+      text-align: center;
       color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      text-decoration: none;
-      font-size: 1.2em;
-      transition: transform 0.3s ease-in-out;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .link-button:hover {
-      transform: scale(1.1);
-    }
-    .sound-control {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .sound-btn {
-      background-color: rgba(0, 0, 0, 0.8);
-      border: none;
-      padding: 5px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5em;
-      color: white;
-    }
-    .sound-btn:hover {
-      background-color: rgba(68, 68, 68, 0.8);
-    }
-    .sound-btn.muted {
-      color: #888;
-    }
-    .sound-btn.unmuted {
-      color: #fff;
-    }
-    .volume-slider {
-      opacity: 0;
-      transform: translateX(20px);
-      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-      width: 0;
-    }
-    .sound-control:hover .volume-slider {
-      opacity: 1;
-      transform: translateX(0);
-      width: 100px;
-    }
-    .volume-slider input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 5px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 5px;
-      outline: none;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-    }
-    .volume-slider input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: white;
-      cursor: pointer;
-    }
-    .volume-slider input[type="range"]::-moz-range-thumb {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: white;
-      cursor: pointer;
-    }
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 2em;
-      }
-      p {
-        font-size: 1em;
-      }
-      .links {
-        flex-direction: column;
-        align-items: center;
-      }
-      .link-button {
-        width: 35px;
-        height: 35px;
-        font-size: 1em;
-      }
-      .sound-control {
-        top: 10px;
-        right: 10px;
-      }
-      .content {
-        padding: 10px;
-      }
-    }
-    @media (max-width: 400px) {
-      .links {
-        gap: 10px;
-      }
-      .visitor-count {
-        font-size: 0.9em;
-      }
+      font-family: Arial, sans-serif;
+      padding-top: 20vh;
+      backdrop-filter: blur(10px);
     }
   </style>
-  <script>
-    let isMuted = true;
-    let visitorCount = 213;
-
-    function toggleSound() {
-      const iframe = document.querySelector('iframe');
-      const slider = document.querySelector('#volume');
-      if (iframe) {
-        if (isMuted) {
-          iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*');
-          slider.value = 100;
-          document.querySelector('.sound-btn').classList.remove('muted');
-          document.querySelector('.sound-btn').classList.add('unmuted');
-        } else {
-          iframe.contentWindow.postMessage('{"method":"setVolume","value":0.0}', '*');
-          slider.value = 0;
-          document.querySelector('.sound-btn').classList.remove('unmuted');
-          document.querySelector('.sound-btn').classList.add('muted');
-        }
-        isMuted = !isMuted;
-      }
-      console.log("Volume toggled, muted: " + isMuted); // للفحص
-    }
-
-    function adjustVolume() {
-      const iframe = document.querySelector('iframe');
-      const slider = document.querySelector('#volume');
-      const volume = slider.value / 100;
-      if (iframe) {
-        iframe.contentWindow.postMessage(`{"method":"setVolume","value":${volume}}`, '*');
-        const soundBtn = document.querySelector('.sound-btn');
-        if (volume == 0) {
-          isMuted = true;
-          soundBtn.classList.remove('unmuted');
-          soundBtn.classList.add('muted');
-        } else {
-          isMuted = false;
-          soundBtn.classList.remove('muted');
-          soundBtn.classList.add('unmuted');
-        }
-      }
-      console.log("Volume adjusted to: " + volume); // للفحص
-    }
-
-    function updateVisitorCount() {
-      visitorCount++;
-      document.getElementById('visitor-count').textContent = `Visitors: ${visitorCount}`;
-    }
-
-    window.addEventListener('load', () => {
-      const iframe = document.querySelector('iframe');
-      if (iframe) {
-        iframe.contentWindow.postMessage('{"method":"setVolume","value":0.0}', '*');
-        document.querySelector('.sound-btn').classList.add('muted');
-      }
-      updateVisitorCount();
-    });
-  </script>
 </head>
 <body>
-  <iframe 
-    src="https://player.vimeo.com/video/1085590319?autoplay=1&muted=0&controls=1&loop=1&autopause=0&background=0" 
-    allow="autoplay; fullscreen" 
-    allowfullscreen>
-  </iframe>
-  <div class="overlay"></div>
-  <div class="sound-control">
-    <button class="sound-btn" onclick="toggleSound()">
-      <i class="fas fa-headphones"></i>
-    </button>
-    <div class="volume-slider">
-      <input type="range" id="volume" min="0" max="100" value="0" oninput="adjustVolume()">
-    </div>
+
+  <div class="video-bg">
+    <iframe 
+      src="https://player.vimeo.com/video/1085590319?background=1&autoplay=1&loop=1&muted=0"
+      frameborder="0" 
+      allow="autoplay; fullscreen"
+      allowfullscreen>
+    </iframe>
   </div>
+
   <div class="content">
     <h1>besotubegg</h1>
     <p>Pro Gamer 🎮 | Follow me everywhere 👇</p>
-    <div class="visitor-count" id="visitor-count">Visitors: 213</div>
-    <div class="links">
-      <a class="link-button" href="https://www.youtube.com/channel/UC4nHBAP2DDj0Nzjzqi1OIFw" target="_blank"><i class="fab fa-youtube"></i></a>
-      <a class="link-button" href="https://kick.com/besotubegg" target="_blank"><i class="fas fa-gamepad"></i></a>
-      <a class="link-button" href="https://www.instagram.com/0beso052/?hl=ar" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a class="link-button" href="https://discord.gg/zkdW5mAm3r" target="_blank"><i class="fab fa-discord"></i></a>
-      <a class="link-button" href="https://www.twitch.tv/besotubegg" target="_blank"><i class="fab fa-twitch"></i></a>
-    </div>
+    <p>Visitors: 214</p>
+    <!-- روابط السوشيال هنا لو حبيت -->
   </div>
+
 </body>
 </html>
