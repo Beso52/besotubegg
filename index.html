@@ -20,7 +20,7 @@
       position: relative;
       overflow: hidden;
     }
-    video {
+    iframe {
       position: absolute;
       top: 0;
       left: 0;
@@ -30,6 +30,7 @@
       min-height: 100%;
       object-fit: cover;
       z-index: -1;
+      pointer-events: none;
       filter: brightness(0.6);
     }
     .overlay {
@@ -218,30 +219,31 @@
     let visitorCount = 213;
 
     function toggleSound() {
-      const video = document.querySelector('video');
+      const iframe = document.querySelector('iframe');
       const slider = document.querySelector('#volume');
-      if (video) {
+      if (iframe) {
         if (isMuted) {
-          video.volume = 1.0;
+          iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*');
           slider.value = 100;
           document.querySelector('.sound-btn').classList.remove('muted');
           document.querySelector('.sound-btn').classList.add('unmuted');
         } else {
-          video.volume = 0.0;
+          iframe.contentWindow.postMessage('{"method":"setVolume","value":0.0}', '*');
           slider.value = 0;
           document.querySelector('.sound-btn').classList.remove('unmuted');
           document.querySelector('.sound-btn').classList.add('muted');
         }
         isMuted = !isMuted;
       }
+      console.log("Volume toggled, muted: " + isMuted); // للفحص
     }
 
     function adjustVolume() {
-      const video = document.querySelector('video');
+      const iframe = document.querySelector('iframe');
       const slider = document.querySelector('#volume');
       const volume = slider.value / 100;
-      if (video) {
-        video.volume = volume;
+      if (iframe) {
+        iframe.contentWindow.postMessage(`{"method":"setVolume","value":${volume}}`, '*');
         const soundBtn = document.querySelector('.sound-btn');
         if (volume == 0) {
           isMuted = true;
@@ -253,6 +255,7 @@
           soundBtn.classList.add('unmuted');
         }
       }
+      console.log("Volume adjusted to: " + volume); // للفحص
     }
 
     function updateVisitorCount() {
@@ -261,10 +264,9 @@
     }
 
     window.addEventListener('load', () => {
-      const video = document.querySelector('video');
-      if (video) {
-        video.volume = 0.0;
-        video.playbackRate = 1.0;
+      const iframe = document.querySelector('iframe');
+      if (iframe) {
+        iframe.contentWindow.postMessage('{"method":"setVolume","value":0.0}', '*');
         document.querySelector('.sound-btn').classList.add('muted');
       }
       updateVisitorCount();
@@ -272,10 +274,7 @@
   </script>
 </head>
 <body>
-  <video autoplay loop playsinline>
-    <source src="https://drive.google.com/uc?export=download&id=1eLkQFExESzXl0qt1AJTucKuSmQezCcZ5" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  <iframe src="https://player.vimeo.com/video/1085590319?h=10cfd3d662&autoplay=1&loop=1&background=1" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
   <div class="overlay"></div>
   <div class="sound-control">
     <button class="sound-btn" onclick="toggleSound()">
