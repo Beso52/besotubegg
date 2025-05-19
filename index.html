@@ -311,14 +311,14 @@
     }
   </style>
   <script>
-    let isMuted = false; // الصوت مفتوح تلقائيًا
+    let isMuted = false;
     let visitorCount = 214;
 
     function adjustVideoSize() {
       const iframe = document.querySelector('iframe');
       if (iframe) {
         const windowAspect = window.innerWidth / window.innerHeight;
-        const videoAspect = 16 / 9; // افتراضي لنسبة الفيديو (16:9)
+        const videoAspect = 16 / 9;
 
         if (windowAspect > videoAspect) {
           iframe.style.width = '100%';
@@ -378,9 +378,9 @@
     window.addEventListener('load', () => {
       const iframe = document.querySelector('iframe');
       if (iframe) {
-        iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*'); // الصوت مفتوح تلقائيًا
-        document.querySelector('#volume').value = 100; // الـ slider في أعلى قيمة
-        document.querySelector('.sound-btn').classList.add('unmuted'); // الزر في حالة مفتوح
+        iframe.contentWindow.postMessage('{"method":"setVolume","value":1.0}', '*');
+        document.querySelector('#volume').value = 100;
+        document.querySelector('.sound-btn').classList.add('unmuted');
       }
       adjustVideoSize();
       updateVisitorCount();
@@ -392,7 +392,7 @@
 <body>
   <div class="video-bg">
     <iframe 
-      src="https://player.vimeo.com/video/1085590319?background=1&autoplay=1&loop=1&muted=0&autopause=0&controls=0"
+      src="https://player.vimeo.com/video/76979871?background=1&autoplay=1&loop=1&muted=0&autopause=0&controls=0"
       frameborder="0" 
       allow="autoplay; fullscreen"
       allowfullscreen>
